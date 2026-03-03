@@ -1,0 +1,54 @@
+#include <stdio.h>
+#define max 10
+
+typedef struct {
+    int pid;
+    char pname;
+    int at;
+    int bt;
+    int wt;
+    int ta;
+}process;
+int main()
+{
+    process pro[max];
+    int n;
+    printf("Enter the number of process");
+    scanf("%d",&n);
+    for(int i=0;i<=n-1;i++)
+    {
+        //printf("Enter the pid of %d ",i+1);
+        //scanf("%d",&pro[i].pid);
+        //printf("Enter the pname of %d ",i+1);
+        //scanf("%s",&pro[i].pname);
+        printf("Enter the at of %d ",i+1);
+        scanf("%d",&pro[i].at);
+        printf("Enter the bt of %d ",i+1);
+        scanf("%d",&pro[i].bt);
+    }
+    int wt;
+    float awt;
+    for(int i=0;i<=n-1;i++)
+    {
+        pro[i].wt=pro[i].at+pro[i-1].bt;
+        printf("\n%d\n",pro[i].wt);
+    }
+    for(int i=0;i<=n-1;i++)
+    {
+        awt+=pro[i].wt;
+        printf("\n%f\n",awt);iii
+    }
+    awt=awt/n;
+    printf("\nThe avg wait time is %f ",awt);
+    for(int i=0;i<=n-1;i++)
+    {
+        pro[i].ta=pro[i].wt+pro[i].bt;
+    }
+    float ata;
+    for(int i=0;i<=n-1;i++)
+    {
+        ata+=pro[i].ta;
+    }
+    ata=ata/n;
+    printf("\nThe Avg turn around time is %f",ata);
+}
