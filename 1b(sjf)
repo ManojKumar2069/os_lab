@@ -1,0 +1,78 @@
+#include <stdio.h>
+#define max 10
+struct process
+{
+    int at;
+    int bt;
+    int wt;
+    int tat;
+    int ct;
+    int done;
+};
+void sjf(struct process p[],int n)
+{
+    int completed=0;
+    int t=0;
+    float t_wt=0,t_tat=0;
+    while(completed < n)
+    {
+        int idx=-1;
+        int min_bust=9999;
+        for(int i=0;i<n;i++)
+        {
+            if(p[i].at <= t && p[i].done == 0)
+            {
+                if(p[i].bt < min_bust)
+                {
+                    min_bust=p[i].bt;
+                    idx=i;
+                }
+                else if(p[i].bt == min_bust)
+                {
+                    if(p[i].at < p[idx].at)
+                    {
+                        idx=i;
+                    }
+                }
+            }
+        }
+        if(idx!=-1)
+        {
+            p[idx].wt = t-p[idx].at;
+            p[idx].ct = t+p[idx].bt;
+            p[idx].tat = p[idx].ct-p[idx].at;
+            t_wt += p[idx].wt;
+            t_tat += p[idx].tat;
+            p[idx].done=1;
+            completed++;
+            t = p[idx].ct;
+        }
+        else
+        {
+            t++;
+        }
+    }
+    printf("\nPID\tAT\tBT\tWT\tTAT\tCT\Done");
+    for(int i=0;i<n;i++)
+    {
+        printf("\n%d\t%d\t%d\t%d\t%d\t%d\t%d",i,p[i].at,p[i].bt,p[i].wt,p[i].tat,p[i].ct,p[i].done);
+    }
+    printf("\nThe avg wait time is %f ",t_wt/n);
+    printf("\nThe avg Turn Around Time is %f ",t_tat/n);
+}
+int main()
+{
+    struct process p[max];
+    int n;
+    printf("Enter the number of process \n ");
+    scanf("%d",&n);
+    for(int i=0;i<n;i++)
+    {
+        printf("Enter the at of %d process",i);
+        scanf("%d",&p[i].at);
+        printf("Enter the bt of %d process",i);
+        scanf("%d",&p[i].bt);
+        p[i].done=0;
+    }
+    sjf(p,n);
+}
