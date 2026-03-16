@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct process
+{
+    int at;
+    int bt;
+    int pr;
+    int wt;
+    int tat;
+    int ct;
+    int done;
+};
+
+void priority_scheduling(struct process p[],int n)
+{
+    int completed=0;
+    int t=0;
+    float total_wt,total_tat;
+    while(completed<n)
+    {
+        int idx=-1;
+        int high_priorty=999;
+        for(int i=0;i<n;i++)
+        {
+            if(p[i].at<=t && p[i].done==0)
+            {
+                if(p[i].pr<high_priorty)
+                {
+                    high_priorty=p[i].pr;
+                    idx=i;
+                }
+                else if(p[i].pr==high_priorty)
+                {
+                    if(p[i].at<=p[idx].at)
+                    {
+                        idx=i;
+                    }
+                }
+            }
+        }
+        if(idx!=-1)
+        {
+            p[idx].wt=t-p[idx].at;
+            p[idx].ct=t+p[idx].bt;
+            p[idx].tat=p[idx].ct-p[idx].at;
+
+            total_tat+=p[idx].tat;
+            total_wt+=p[idx].wt;
+
+            p[idx].done=1;
+            completed++;
+            t=p[idx].ct;
+        }
+        else
+        {
+            t++;
+        }
+    }
+    printf("\nId\tAT\tBT\tPR\tCT\tWT\tTAT\n");
+    for(int i=0;i<n;i++)
+    {
+        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",i,p[i].at,p[i].bt,p[i].pr,p[i].ct,p[i].wt,p[i].tat);
+    }
+    printf("\n The Avg wait time is %f\n",total_wt/n);
+    printf("\n The Avg Turn Around Time is %f\n",total_tat/n);
+}
+
+int main()
+{
+    int n;
+    printf("How many process\n");
+    scanf("%d",&n);
+    struct process p[n];
+    for(int i=0;i<n;i++)
+    {
+        printf("\nEnter the Arivial time of process %d ",i+1);
+        scanf("%d",&p[i].at);
+        printf("\n Enter the bust time of process %d ",i+1);
+        scanf("%d",&p[i].bt);
+        printf("\nEnter the proity of %d ",i+1);
+        scanf("%d",&p[i].pr);
+        p[i].done=0;
+    }
+    priority_scheduling(p,n);
+
+}
