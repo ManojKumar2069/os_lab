@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct process {
+    int id, at, bt, ct, tat, wt, q_no, done;
+};
+
+void sort(struct process p[], int n) {
+    for (int i = 0; i < n-1; i++) {
+        for (int j = 0; j < n-1-i; j++) {
+            if (p[j].at > p[j+1].at) {
+                struct process temp = p[j];
+                p[j] = p[j+1];
+                p[j+1] = temp;
+            }
+        }
+    }
+}
+
+void fcfs(struct process p[], int n, int *currentTime) {
+    for (int i = 0; i < n; i++) {
+        if (*currentTime < p[i].at) {
+            *currentTime = p[i].at;
+        }
+        p[i].wt = *currentTime - p[i].at;
+        p[i].ct = *currentTime + p[i].bt;
+        p[i].tat = p[i].ct - p[i].at;
+        *currentTime = p[i].ct;
+        p[i].done = 1;
+    }
+}
+
+int main() {
+    int n, sys = 0, user = 0, current_time = 0;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    struct process p[n], user_p[n], sys_p[n], new_p[n];
+
+    for (int i = 0; i < n; i++) {
+        p[i].id = i;
+        printf("Enter arrival time of process %d: ", i);
+        scanf("%d", &p[i].at);
+        printf("Enter burst time of process %d: ", i);
+        scanf("%d", &p[i].bt);
+        p[i].done = 0;
+        printf("Enter type (1=system, 2=user): ");
+        scanf("%d", &p[i].q_no);
+
+        if (p[i].q_no == 1) {
+            sys_p[sys++] = p[i];
+        } else {
+            user_p[user++] = p[i];
+        }
+    }
+
+    sort(sys_p, sys);
+    sort(user_p, user);
+
+    fcfs(sys_p, sys, &current_time);
+    fcfs(user_p, user, &current_time);
+
+    for (int i = 0; i < sys; i++) new_p[sys_p[i].id] = sys_p[i];
+    for (int i = 0; i < user; i++) new_p[user_p[i].id] = user_p[i];
+
+    printf("\nid\tat\tbt\tct\ttat\twt\tq_no\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+               new_p[i].id, new_p[i].at, new_p[i].bt,
+               new_p[i].ct, new_p[i].tat, new_p[i].wt,
+               new_p[i].q_no);
+    }
+    return 0;
+}
